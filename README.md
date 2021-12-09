@@ -1,4 +1,4 @@
-# step-three-pr
+# step-three
 
 ## Project setup
 ```
