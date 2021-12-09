@@ -30,9 +30,12 @@ export default {
     cheackCard(item) {
       this.cheack.push(item)
       item.hide = true;
-      console.log(this.cheack);
-      console.log(item);
+      // console.log(this.cheack);
+      // console.log(item);
     }
+  },
+  updated() {
+    console.log(this.cheack);
   },
 };
 </script>
