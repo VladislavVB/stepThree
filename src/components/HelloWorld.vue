@@ -1,8 +1,13 @@
 <template>
   <div class="wrapper">
-    <div @click="cheackCard(item)" v-for="item in cards" :key="item" class="card">
-      {{item.text}}
-      <div v-bind:class="{active: item.hide}" class="hide"></div>
+    <div
+      @click="checkCard(item)"
+      v-for="item in cards"
+      :key="item"
+      class="card"
+    >
+      {{ item.text }}
+      <div v-bind:class="{ active: item.hide, okey: item.okey } " class="hide"></div>
     </div>
   </div>
 </template>
@@ -14,28 +19,48 @@ export default {
     return {
       // isHide: false,
       cards: [
-        { name: "card1", text: "1", hide: false },
-        { name: "card2", text: "2", hide: false },
-        { name: "card3", text: "1", hide: false },
-        { name: "card4", text: "4", hide: false },
-        { name: "card5", text: "3", hide: false },
-        { name: "card6", text: "4", hide: false },
-        { name: "card7", text: "2", hide: false },
-        { name: "card8", text: "3", hide: false },
+        { text: "1", hide: false, okey: false },
+        { text: "2", hide: false, okey: false },
+        { text: "1", hide: false, okey: false },
+        { text: "4", hide: false, okey: false },
+        { text: "3", hide: false, okey: false },
+        { text: "4", hide: false, okey: false },
+        { text: "2", hide: false, okey: false },
+        { text: "3", hide: false, okey: false },
       ],
-      cheack: []
+      check: [],
     };
   },
   methods: {
-    cheackCard(item) {
-      this.cheack.push(item)
+    checkCard(item) {
+      this.check.push(item);
       item.hide = true;
-      // console.log(this.cheack);
+      // console.log(this.check);
       // console.log(item);
-    }
+    },
   },
   updated() {
-    console.log(this.cheack);
+    console.log(this.check);
+
+    if (this.check.length > 2) {
+      this.check.forEach((item) => {
+        item.hide = false;
+      });
+      this.check = [];
+      console.log('dss');
+    }
+
+    if (this.check.length >= 2) {
+      if (this.check[0].text === this.check[1].text) {
+
+      
+        this.check.forEach(elem => {
+          elem.okey = true;
+          console.log('ok');
+        })
+      
+      }
+    }
   },
 };
 </script>
@@ -74,6 +99,14 @@ export default {
       border-radius: 20px;
       width: 0;
       height: 0;
+      pointer-events: none;
+    }
+    &.okey {
+      position: absolute;
+      width: 0;
+      height: 100%;
+      border: 1px solid #fff;
+      pointer-events: none;
     }
   }
 }
