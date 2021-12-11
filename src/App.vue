@@ -1,15 +1,15 @@
 <template>
   <!-- <img alt="Vue logo" src="./assets/logo.png" /> -->
-  <HelloWorld/>
+  <GamePair/>
 </template>
 
 <script>
-import HelloWorld from "./components/HelloWorld.vue";
+import GamePair from "./components/GamePair.vue";
 
 export default {
   name: "App",
   components: {
-    HelloWorld,
+    GamePair,
   },
 };
 </script>
