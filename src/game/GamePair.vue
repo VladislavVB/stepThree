@@ -4,37 +4,30 @@
       Данные не корректны
     </p>
     <input v-model="gameColumn" placeholder="колонки" type="number" />
-    <input v-model="gameLine" placeholder="строки" type="number" />
+    <input v-model="gameRow" placeholder="строки" type="number" />
     <button @click="printGame()">Запустить</button>
   </form>
 
-  <GameTabel :rows="gameLine" :columns="gameColumn" />
+  <GameTimer />
+
   <div class="game">
-    <div
-      @click="checkCard(item)"
-      v-for="item in cards"
-      :key="item"
-      class="game__card"
-    >
-    
-      <div
-        v-bind:class="{ active: item.hide, okey: item.okey }"
-        class="hide"
-      ></div>
-    </div>
+    <GameTabel @onGamePasset="onGamePasset()" :rows="gameRow" :columns="gameColumn" :cards="cards" />
   </div>
+
   <button v-bind:class="{ hide: btnReapetGame }" class="game__repeat">
     Сыграть еще раз
   </button>
 </template>
 
 <script>
-import GameTabel from "./GameTabel.vue";
+import GameTabel from "./components/GameTabel.vue";
+import GameTimer from "./components/GameTimer.vue";
 
 export default {
   name: "GamePair",
   components: {
-    GameTabel
+    GameTabel,
+    GameTimer,
   },
 
   data() {
@@ -42,7 +35,7 @@ export default {
       // errors: [],
       errorValidate: false,
       gameColumn: null,
-      gameLine: null,
+      gameRow: null,
       btnReapetGame: true,
       // isHide: false,
       cards: [
@@ -68,6 +61,9 @@ export default {
   },
 
   methods: {
+    onGamePasset() {
+      this.btnReapetGame = false
+    },
     validateForm(column, row) {
       return !(
         column < 2 ||
@@ -78,7 +74,7 @@ export default {
       );
     },
     printGame() {
-      if (!this.validateForm(this.gameColumn, this.gameLine)) {
+      if (!this.validateForm(this.gameColumn, this.gameRow)) {
         this.errorValidate = true;
         console.log("111111111111111111111111");
         return;
@@ -86,55 +82,44 @@ export default {
       this.errorValidate = false;
       // console.log(validateForm);
       // console.log(this.gameColumn);
-      // console.log(this.gameLine);
-      for (let i = 0; i < this.gameColumn * this.gameLine; i += 2) {
+      // console.log(this.gameRow);
+      let resData = [];
+      for (let i = 0; i < this.gameColumn * this.gameRow; i += 2) {
         const data = {
           text: i,
           hide: false,
           okey: false,
         };
-        this.cards[i] = { ...data };
-        this.cards[i + 1] = { ...data };
+        resData[i] = { ...data };
+       resData[i + 1] = { ...data };
       }
-      this.cards.sort(() => Math.random() - 0.5);
-      this.gameColumn = "";
-      this.gameLine = "";
+      resData.sort(() => Math.random() - 0.5);
+
+      this.cards = resData
+      
+      console.log(resData);
+      // this.gameColumn = "";
+      // this.gameRow = "";
       //ну тут непонятно как ьез
       // const
     },
-    checkCard(item) {
-      this.check.push(item);
-      item.hide = true;
-      if (this.check.length >= 2) {
-        if (this.check[0].text === this.check[1].text) {
-          this.check.forEach((elem) => {
-            elem.okey = true;
-          });
-        }
-        setTimeout(() => {
-          this.check.forEach((item) => {
-            item.hide = false;
-          });
-          this.check = [];
-        }, 500);
-      }
-
-      let a = false;
-      this.cards.forEach((elem) => {
-        if (!elem.okey) {
-          a = true;
-        }
-      });
-      if (!a) {
-        this.btnReapetGame = false;
-      }
-    },
+  },
+  updated() {
+    // let a = false;
+    // this.cards.forEach((elem) => {
+    //   if (!elem.okey) {
+    //     a = true;
+    //   }
+    // });
+    // if (!a) {
+    //   this.btnReapetGame = false;
+    // }
   },
 };
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped lang="scss">
+<style lang="scss">
 .error {
   display: none;
   &.active {
@@ -144,9 +129,9 @@ export default {
 .game {
   border: 5px solid #fff;
   padding: 10px;
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  grid-template-rows: 1fr 1fr 1fr;
+  // display: grid;
+  // grid-template-columns: 1fr 1fr 1fr;
+  // grid-template-rows: 1fr 1fr 1fr;
   // gap: 10px 10px;
   // max-width: 280px;
   &__form {

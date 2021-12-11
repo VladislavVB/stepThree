@@ -4,7 +4,7 @@
 </template>
 
 <script>
-import GamePair from "./components/GamePair.vue";
+import GamePair from "./game/GamePair.vue";
 
 export default {
   name: "App",
