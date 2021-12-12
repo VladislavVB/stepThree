@@ -1,5 +1,6 @@
 <template>
   <form @submit.prevent class="game__form">
+    <div v-bind:class="{ disabel: gameFormDisabel }" ></div>
     <p v-bind:class="{ active: errorValidate }" class="error">
       Данные не корректны
     </p>
@@ -15,11 +16,6 @@
 
   <div class="game">
     <div v-bind:class="{ active: playNow }" class="game__play-now">
-      <!-- <img
-        v-bind:class="{ active: wastedGame }"
-        src="../assets/wasted.png"
-        alt=""
-      /> -->
     </div>
     <GameTabel
       @onGamePasset="onGamePasset()"
@@ -49,15 +45,16 @@ export default {
 
   data() {
     return {
-      wastedGame: false,
-      NUMBER_OF_SECONDS: 10,
-      timer: 10,
+      timer: 60,
+      gameRow: 4,
+      gameColumn: 4,
+      NUMBER_OF_SECONDS: 60,
       timerInteval: null,
-      errorValidate: false,
-      gameColumn: 2,
-      gameRow: 2,
-      btnReapetGame: true,
       playNow: false,
+      wastedGame: false,
+      errorValidate: false,
+      gameFormDisabel: false,
+      btnReapetGame: true,
       cards: [],
       check: [],
     };
@@ -69,9 +66,6 @@ export default {
       this.btnReapetGame = false;
       this.playNow = true;
     },
-    gameEnd() {
-      this.wastedGame = true;
-    },
     tickTack() {
       clearInterval(this.timerInteval);
       this.timerInteval = setInterval(() => {
@@ -81,7 +75,7 @@ export default {
         } else {
           this.btnReapetGame = false;
           this.playNow = true;
-          console.log(1);
+          this.gameFormDisabel = false;
         }
       }, 1000);
     },
@@ -95,12 +89,15 @@ export default {
       );
     },
     printGame() {
+      this.gameFormDisabel = true;
       this.btnReapetGame = true;
       this.playNow = false;
       this.timer = this.NUMBER_OF_SECONDS;
       if (!this.validateForm(this.gameColumn, this.gameRow)) {
         this.errorValidate = true;
-        console.log("111111111111111111111111");
+        this.gameColumn = 4;
+        this.gameRow = 4;
+        this.printGame();
         return;
       }
       this.errorValidate = false;
@@ -143,6 +140,9 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: center;
+    h1 {
+      margin: 0;
+    }
   }
 }
 .game {
@@ -171,6 +171,7 @@ export default {
       }
       img {
         display: none;
+        pointer-events: none;
         &.active {
           display: flex;
         }
@@ -193,6 +194,19 @@ export default {
     flex-direction: column;
     margin-bottom: 50px;
     margin-top: 50px;
+    position: relative;
+    padding: 20px;
+    // background-color: #ddd;
+    border: 2px solid #fff;
+    .disabel {
+      position: absolute;
+      background-color: rgba(0, 0, 0, 0.4);
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      // border: px solid #fff;
+    }
     input {
       border: none;
       margin-bottom: 20px;

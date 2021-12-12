@@ -65,11 +65,7 @@ export default {
       }
 
       const flatData = JSON.parse(JSON.stringify(this.data)).flat();
-      console.log(flatData);
-      console.log(flatData.filter((el) => el.okey));
-      // console.log(555);
       if (flatData.filter((el) => el.okey).length === flatData.length) {
-        console.log(666);
         this.$emit("onGamePasset", true);
       }
     },
