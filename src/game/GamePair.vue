@@ -8,61 +8,82 @@
     <button @click="printGame()">Запустить</button>
   </form>
 
-  <GameTimer />
-
-  <div class="game">
-    <GameTabel @onGamePasset="onGamePasset()" :rows="gameRow" :columns="gameColumn" :cards="cards" />
+  <div class="timer__wrapper">
+    <h1>Timer</h1>
+    <div class="game__timer">{{ this.timer }}</div>
   </div>
 
-  <button v-bind:class="{ hide: btnReapetGame }" class="game__repeat">
+  <div class="game">
+    <div v-bind:class="{ active: playNow }" class="game__play-now">
+      <!-- <img
+        v-bind:class="{ active: wastedGame }"
+        src="../assets/wasted.png"
+        alt=""
+      /> -->
+    </div>
+    <GameTabel
+      @onGamePasset="onGamePasset()"
+      :rows="gameRow"
+      :columns="gameColumn"
+      :cards="cards"
+    />
+  </div>
+
+  <button
+    @click="printGame()"
+    v-bind:class="{ hide: btnReapetGame }"
+    class="game__repeat"
+  >
     Сыграть еще раз
   </button>
 </template>
 
 <script>
 import GameTabel from "./components/GameTabel.vue";
-import GameTimer from "./components/GameTimer.vue";
 
 export default {
   name: "GamePair",
   components: {
     GameTabel,
-    GameTimer,
   },
 
   data() {
     return {
-      // errors: [],
+      wastedGame: false,
+      NUMBER_OF_SECONDS: 10,
+      timer: 10,
+      timerInteval: null,
       errorValidate: false,
-      gameColumn: null,
-      gameRow: null,
+      gameColumn: 2,
+      gameRow: 2,
       btnReapetGame: true,
-      // isHide: false,
-      cards: [
-        // { text: "1", hide: false, okey: false },
-        // { text: "2", hide: false, okey: false },
-        // { text: "1", hide: false, okey: false },
-        // { text: "4", hide: false, okey: false },
-        // { text: "3", hide: false, okey: false },
-        // { text: "4", hide: false, okey: false },
-        // { text: "2", hide: false, okey: false },
-        // { text: "3", hide: false, okey: false },
-        // { text: "5", hide: false, okey: false },
-        // { text: "5", hide: false, okey: false },
-        // { text: "6", hide: false, okey: false },
-        // { text: "7", hide: false, okey: false },
-        // { text: "6", hide: false, okey: false },
-        // { text: "7", hide: false, okey: false },
-        // { text: "8", hide: false, okey: false },
-        // { text: "8", hide: false, okey: false },
-      ],
+      playNow: false,
+      cards: [],
       check: [],
     };
   },
 
   methods: {
     onGamePasset() {
-      this.btnReapetGame = false
+      this.timer = 0;
+      this.btnReapetGame = false;
+      this.playNow = true;
+    },
+    gameEnd() {
+      this.wastedGame = true;
+    },
+    tickTack() {
+      clearInterval(this.timerInteval);
+      this.timerInteval = setInterval(() => {
+        if (this.timer > 0 || this.timer === 1) {
+          this.timer -= 1;
+          this.playNow = false;
+        } else {
+          this.btnReapetGame = false;
+          this.playNow = true;
+          console.log(1);
+        }
+      }, 1000);
     },
     validateForm(column, row) {
       return !(
@@ -74,15 +95,15 @@ export default {
       );
     },
     printGame() {
+      this.btnReapetGame = true;
+      this.playNow = false;
+      this.timer = this.NUMBER_OF_SECONDS;
       if (!this.validateForm(this.gameColumn, this.gameRow)) {
         this.errorValidate = true;
         console.log("111111111111111111111111");
         return;
       }
       this.errorValidate = false;
-      // console.log(validateForm);
-      // console.log(this.gameColumn);
-      // console.log(this.gameRow);
       let resData = [];
       for (let i = 0; i < this.gameColumn * this.gameRow; i += 2) {
         const data = {
@@ -91,49 +112,82 @@ export default {
           okey: false,
         };
         resData[i] = { ...data };
-       resData[i + 1] = { ...data };
+        resData[i + 1] = { ...data };
       }
       resData.sort(() => Math.random() - 0.5);
 
-      this.cards = resData
-      
+      this.cards = resData;
+      this.tickTack();
       console.log(resData);
-      // this.gameColumn = "";
-      // this.gameRow = "";
-      //ну тут непонятно как ьез
-      // const
     },
-  },
-  updated() {
-    // let a = false;
-    // this.cards.forEach((elem) => {
-    //   if (!elem.okey) {
-    //     a = true;
-    //   }
-    // });
-    // if (!a) {
-    //   this.btnReapetGame = false;
-    // }
   },
 };
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss">
+#app {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+}
 .error {
   display: none;
   &.active {
     display: block;
   }
 }
+.timer {
+  &__wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+}
 .game {
+  position: relative;
+  width: fit-content;
   border: 5px solid #fff;
   padding: 10px;
-  // display: grid;
-  // grid-template-columns: 1fr 1fr 1fr;
-  // grid-template-rows: 1fr 1fr 1fr;
-  // gap: 10px 10px;
-  // max-width: 280px;
+  &__timer {
+    margin-bottom: 20px;
+  }
+  &__play {
+    &-now {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: rgba(2, 2, 2, 0.3);
+      z-index: 9;
+      display: none;
+      &.active {
+        display: flex;
+      }
+      img {
+        display: none;
+        &.active {
+          display: flex;
+        }
+      }
+      button {
+        width: 200px;
+        height: 50px;
+        border-radius: 10px;
+        background-color: #336b33;
+        border: 1px solid #fff;
+        color: #fff;
+        z-index: 10;
+        cursor: pointer;
+      }
+    }
+  }
+
   &__form {
     display: flex;
     flex-direction: column;

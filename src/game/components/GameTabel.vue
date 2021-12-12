@@ -12,23 +12,6 @@
       </div>
     </div>
   </div>
-  <!-- <div v-for="row in rows" :key="row">
-    <div v-for="col in columns" :key="col"> -->
-  <!-- <div
-    @click="checkCard(item)"
-    v-for="item in cards"
-    :key="item"
-    class="game__card"
-  >
-    {{ item.text }}
-    <div
-      v-bind:class="{ active: item.hide, okey: item.okey }"
-      class="hide"
-    ></div>
-  </div> -->
-  <!-- </div>
-
-  </div> -->
 </template>
 
 <script>
@@ -65,7 +48,10 @@ export default {
       this.check.push(item);
       item.hide = true;
       if (this.check.length >= 2) {
-        if (this.check[0].text === this.check[1].text) {
+        if (
+          this.check[0].text === this.check[1].text &&
+          this.check[0] != this.check[1]
+        ) {
           this.check.forEach((elem) => {
             elem.okey = true;
           });
@@ -75,24 +61,16 @@ export default {
             item.hide = false;
           });
           this.check = [];
-        }, 500);
+        }, 300);
       }
 
-      let flag = true; 
-      const flatData = JSON.parse(JSON.stringify(this.data));
-      flatData.flat();
-
-      flatData.forEach((elem) => {
-        console.log(elem);
-        if (!elem.okey) {
-          flag = false;
-        }
-      });
+      const flatData = JSON.parse(JSON.stringify(this.data)).flat();
       console.log(flatData);
-      if (flag) {
-        console.log('222222');
-        this.$emit('onGamePasset', true)
-        // this.btnReapetGame = false;
+      console.log(flatData.filter((el) => el.okey));
+      // console.log(555);
+      if (flatData.filter((el) => el.okey).length === flatData.length) {
+        console.log(666);
+        this.$emit("onGamePasset", true);
       }
     },
   },
@@ -103,7 +81,6 @@ export default {
         this.rows,
         this.columns
       );
-      // console.log(this.cards);
     }
   },
 };
@@ -114,10 +91,6 @@ export default {
   border: 5px solid #fff;
   padding: 10px;
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  grid-template-rows: 1fr 1fr 1fr;
-  // gap: 10px 10px;
-  // max-width: 280px;
   &__cards {
     display: flex;
     flex-direction: column;
@@ -149,7 +122,6 @@ export default {
     border-radius: 10px;
     color: #fff;
     padding: 15px 30px;
-    // text-transform: uppercase;
     background-color: #336b33;
     border: 2px solid #fff;
     transition: 0.5s;
@@ -171,7 +143,6 @@ export default {
     align-items: center;
     transition: 1.5s;
     position: relative;
-    // pointer-events: none;
     .hide {
       position: absolute;
       top: 0;

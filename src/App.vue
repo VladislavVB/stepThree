@@ -19,7 +19,7 @@ body   {
   background-color: #2c3e50;
   color: #fff;
   margin: 0;  
-  height: 100vh;
+  // height: 100vh;
   font-family: Avenir, Helvetica, Arial, sans-serif;
   text-align: center;
   display: flex;
