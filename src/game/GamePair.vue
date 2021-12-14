@@ -15,7 +15,7 @@
     <div class="game__timer">{{ this.timer }}</div>
   </div>
 
-  <div  class="game">
+  <div class="game">
     <div v-bind:class="{ active: playNow }" class="game__play-now">
     </div>
     <GameTabel
@@ -47,8 +47,8 @@ export default {
   data() {
     return {
       timer: 60,
-      gameRow: null,
-      gameColumn: null,
+      gameRow: '',
+      gameColumn: '',
       NUMBER_OF_SECONDS: 60,
       timerInteval: null,
       playNow: false,
@@ -102,7 +102,6 @@ export default {
         this.printGame();
         return;
       }
-      
       this.errorValidate = false;
       let resData = [];
       for (let i = 0; i < this.gameColumn * this.gameRow; i += 2) {
@@ -118,6 +117,7 @@ export default {
 
       this.cards = resData;
       this.tickTack();
+      console.log(resData);
     },
     killGame() {
       this.cards = [];
