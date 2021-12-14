@@ -46,10 +46,10 @@ export default {
 
   data() {
     return {
-      timer: 10,
-      gameRow: 4,
-      gameColumn: 4,
-      NUMBER_OF_SECONDS: 10,
+      timer: 60,
+      gameRow: null,
+      gameColumn: null,
+      NUMBER_OF_SECONDS: 60,
       timerInteval: null,
       playNow: false,
       wastedGame: false,
