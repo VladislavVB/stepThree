@@ -1,5 +1,6 @@
 <template>
   <form @submit.prevent class="game__form">
+
     <div v-bind:class="{ disabel: gameFormDisabel }" ></div>
     <p v-bind:class="{ active: errorValidate }" class="error">
       Данные не корректны
